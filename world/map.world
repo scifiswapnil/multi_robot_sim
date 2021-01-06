@@ -1,0 +1,36 @@
+include "bot.world"
+include "block.world"
+
+define floorplan model
+(
+  color "gray30"
+  boundary 1
+  gui_nose 1
+  gui_grid 0
+  gui_move 0
+  gui_outline 0
+  gripper_return 0
+  fiducial_return 0
+  laser_return 1
+)
+
+resolution 0.02
+interval_sim 100  # simulation timestep in milliseconds
+
+window
+( 
+  size [ 745.000 448.000 ] 
+  rotate [ 0.000 -1.560 ]
+  scale 28.806 
+)
+
+floorplan
+( 
+  name "willow"
+  bitmap "willow.pgm"
+  size [54.0 58.7 0.5]
+  pose [ -29.350 27.000 0 90.000 ]
+)
+
+bot( pose [ -11.277 23.266 0 180.000 ] name "era" color "blue")
+block( pose [ -13.924 25.020 0 180.000 ] color "red")

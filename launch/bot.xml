@@ -1,0 +1,29 @@
+<launch>
+    <arg name="robot_name" default="robot" />
+    <group ns="$(arg robot_name)">
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base_node">
+            <param name="controller_frequency" value="10.0" />
+            <param name="local_costmap/robot_base_frame" value="$(arg robot_name)/base_link" />
+            <param name="global_costmap/robot_base_frame" value="$(arg robot_name)/base_link" />
+            <param name="global_costmap/global_frame" value="map" />
+            <param name="local_costmap/global_frame" value="$(arg robot_name)/odom" />
+            <param name="local_costmap/obstacle_layer/laser/topic" value="/$(arg robot_name)/base_scan" />
+            <param name="local_costmap/obstacle_layer/laser/sensor_frame" value="$(arg robot_name)/base_laser_link" />
+            <param name="global_costmap/obstacle_layer/laser/topic" value="/$(arg robot_name)/base_scan" />
+            <param name="global_costmap/obstacle_layer/laser/sensor_frame" value="$(arg robot_name)/base_laser_link" />
+            <rosparam file="$(find multi_robot_sim)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find multi_robot_sim)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find multi_robot_sim)/config/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find multi_robot_sim)/config/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find multi_robot_sim)/config/dwa_local_planner_params.yaml" command="load" />
+            <rosparam file="$(find multi_robot_sim)/config/move_base.yaml" command="load" />
+        </node>
+
+        <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false">
+            <param name="odom_frame_id" value="$(arg robot_name)/odom" />
+            <param name="base_frame_id" value="$(arg robot_name)/base_link" />
+            <param name="use_sim_time" value="true" />
+        </node>
+
+    </group>
+</launch>
