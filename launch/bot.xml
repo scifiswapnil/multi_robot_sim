@@ -25,5 +25,11 @@
             <param name="use_sim_time" value="true" />
         </node>
 
+        <node pkg="multi_robot_stage" type="multi_robot_stage_node" name="multi_robot_stage_node" respawn="false" output="screen" />
+<!-- 
+        <node pkg="multi_robot_stage" type="multi_robot_stage_node_client" name="multi_robot_stage_node_client" respawn="false" output="screen">
+            <param name="robot_name" value="$(arg robot_name)" />
+        </node> -->
+
     </group>
 </launch>

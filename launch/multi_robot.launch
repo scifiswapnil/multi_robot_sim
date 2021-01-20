@@ -1,0 +1,33 @@
+<launch>
+  <master auto="start" />
+  <param name="use_sim_time" value="true" />
+
+  <node pkg="map_server" type="map_server" name="map_server" args="$(find multi_robot_stage)/maps/map.png 0.01" respawn="false">
+    <param name="frame_id" value="map" />
+  </node>
+
+  <node pkg="stage_ros" type="stageros" name="stageros" args="-u $(find multi_robot_stage)/worlds/multi_robot_warehouse.world" respawn="false">
+    <param name="base_watchdog_timeout" value="0.2" />
+    <param name="use_model_names" value="true" />
+  </node>
+
+  <!-- predefined locations on the maps -->
+  <rosparam command="load" file="$(find multi_robot_stage)/config/config.yaml" />
+
+  <!-- move_base alias and robot configuration -->
+  <include file="$(find multi_robot_stage)/launch/bot.xml">
+    <arg name="robot_name" value="robot_0" />
+  </include>
+  <include file="$(find multi_robot_stage)/launch/bot.xml">
+    <arg name="robot_name" value="robot_2" />
+  </include>
+  <include file="$(find multi_robot_stage)/launch/bot.xml">
+    <arg name="robot_name" value="robot_3" />
+  </include>
+  <include file="$(find multi_robot_stage)/launch/bot.xml">
+    <arg name="robot_name" value="robot_5" />
+  </include>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_robot_stage)/rviz/multirobot.rviz" />
+
+</launch>

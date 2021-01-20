@@ -1,0 +1,50 @@
+<launch>
+  <master auto="start" />
+  <param name="use_sim_time" value="true" />
+
+  <node pkg="map_server" type="map_server" name="map_server" args="$(find multi_robot_stage)/maps/map.png 0.01" respawn="false">
+    <param name="frame_id" value="map" />
+  </node>
+
+  <!-- <include file="$(find multi_robot_stage)/config/slam_gmapping.xml" /> -->
+
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find multi_robot_stage)/worlds/single_robot_warehouse.world" respawn="false">
+    <param name="base_watchdog_timeout" value="0.2" />
+  </node>
+
+  <rosparam command="load" file="$(find multi_robot_stage)/config/config.yaml" />
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base_node">
+    <param name="controller_frequency" value="10.0" />
+    <param name="local_costmap/robot_base_frame" value="base_link" />
+    <param name="global_costmap/robot_base_frame" value="base_link" />
+    <param name="global_costmap/global_frame" value="map" />
+    <param name="local_costmap/global_frame" value="odom" />
+    <param name="local_costmap/obstacle_layer/laser/topic" value="/base_scan" />
+    <param name="local_costmap/obstacle_layer/laser/sensor_frame" value="base_laser_link" />
+    <param name="global_costmap/obstacle_layer/laser/topic" value="/base_scan" />
+    <param name="global_costmap/obstacle_layer/laser/sensor_frame" value="base_laser_link" />
+    <rosparam file="$(find multi_robot_stage)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find multi_robot_stage)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find multi_robot_stage)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find multi_robot_stage)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find multi_robot_stage)/config/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find multi_robot_stage)/config/move_base.yaml" command="load" />
+  </node>
+
+  <node pkg="fake_localization" type="fake_localization" name="fake_localization" respawn="false">
+    <param name="odom_frame_id" value="odom" />
+    <param name="base_frame_id" value="base_link" />
+    <param name="use_sim_time" value="true" />
+  </node>
+
+  <node pkg="multi_robot_stage" type="multi_robot_stage_node" name="multi_robot_stage_node" respawn="false" output="screen" />
+
+  <node pkg="multi_robot_stage" type="multi_robot_stage_node_client" name="multi_robot_stage_node_client" respawn="false" output="screen">
+    <param name="robot_name" value="" />
+  </node>
+
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find multi_robot_stage)/rviz/singlerobot.rviz" />
+
+</launch>
